@@ -9,11 +9,22 @@ class Settings(BaseSettings):
     environment: str = "local"
     api_v1_prefix: str = "/api/v1"
     database_url: str = "postgresql+psycopg://postgres:postgres@localhost:5432/smart_dispatcher"
-    backend_cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:5173"])
+    backend_cors_origins: list[str] = Field(
+        default_factory=lambda: [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:8080",
+            "http://127.0.0.1:8080",
+            "http://localhost:3000",
+        ]
+    )
     log_level: str = "INFO"
     gemini_api_key: str | None = None
-    gemini_model: str = "gemini-2.5-flash"
+    gemini_model: str = "gemini-flash-latest"
     backend_api_key: str | None = None
+    deepgram_api_key: str | None = None
+    deepgram_voice_model: str = "aura-asteria-en"
+    deepgram_stt_model: str = "nova-3-general"
 
     model_config = SettingsConfigDict(
         env_file=".env",

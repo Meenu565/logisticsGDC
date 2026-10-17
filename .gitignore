@@ -1,8 +1,48 @@
+# Virtual environments
 .venv/
 apps/api/.venv/
+env/
+venv/
+ENV/
+
+# Python caches and bytecode
 __pycache__/
 *.py[cod]
+*$py.class
+*.so
 .pytest_cache/
 .ruff_cache/
-.env
+.mypy_cache/
+*.egg-info/
+apps/api/*.egg-info/
+apps/api/smart_dispatcher_api.egg-info/
+dist/
+build/
+eggs/
+.eggs/
 
+# Node & Frontend build outputs
+node_modules/
+apps/web/node_modules/
+apps/web/dist/
+.npm/
+
+# Environment and sensitive keys
+.env
+.env.*
+apps/api/.env
+apps/web/.env
+!*.env.example
+!apps/api/.env.example
+!apps/web/.env.example
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log

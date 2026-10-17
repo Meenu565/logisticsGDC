@@ -124,7 +124,12 @@ class OrderService:
                 imported_rows += 1
             self.orders.complete_import(order_import, imported_rows)
         except Exception as exc:
-            self.orders.complete_import(order_import, imported_rows, ImportStatus.FAILED, str(exc))
+            self.db.rollback()
+            try:
+                self.orders.complete_import(order_import, imported_rows, ImportStatus.FAILED, str(exc))
+                self.db.commit()
+            except Exception:
+                pass
             raise
         if self.events:
             self.events.record(
@@ -152,8 +157,24 @@ class OrderService:
         delivery_type = self.orders.get_delivery_type_by_code(delivery_type_code)
         if delivery_type is None:
             raise ValueError(f"Unknown delivery type: {delivery_type_code}")
+
+        external_id = self._text(row.get("external_order_id"))
+        existing = self.orders.get_by_external_id(external_id) if external_id else None
+        if existing:
+            existing.import_id = import_id
+            existing.delivery_type_id = delivery_type.id
+            existing.customer_name = str(row["customer_name"]).strip()
+            existing.priority = int(row.get("priority") or 0)
+            existing.required_weight_kg = Decimal(str(row.get("required_weight_kg") or 0))
+            existing.required_volume_m3 = Decimal(str(row.get("required_volume_m3") or 0))
+            existing.notes = self._text(row.get("notes"))
+            existing.status = OrderStatus.NEW
+            existing.cancelled_at = None
+            self.orders.clear_stops(existing.id)
+            return self.orders.add(existing)
+
         order = Order(
-            external_order_id=self._text(row.get("external_order_id")),
+            external_order_id=external_id,
             import_id=import_id,
             delivery_type_id=delivery_type.id,
             customer_name=str(row["customer_name"]).strip(),

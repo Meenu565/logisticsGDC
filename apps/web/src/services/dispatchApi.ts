@@ -486,3 +486,77 @@ function timeWindow(raw: RawRecord) {
   if (end) return `Before ${end}`;
   return "Not set";
 }
+
+export async function fetchVoiceStatus(): Promise<{
+  configured: boolean;
+  voice_model: string;
+  stt_model: string;
+  available_voices: string[];
+}> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/voice/status`, {
+      headers: headers(),
+    });
+    if (!response.ok) return { configured: false, voice_model: "", stt_model: "", available_voices: [] };
+    return response.json();
+  } catch {
+    return { configured: false, voice_model: "", stt_model: "", available_voices: [] };
+  }
+}
+
+export async function transcribeAudioBlob(blob: Blob): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", blob, "voice_input.webm");
+  const response = await fetch(`${API_BASE_URL}/voice/transcribe`, {
+    method: "POST",
+    headers: headers(),
+    body: formData,
+  });
+  if (!response.ok) throw new Error("Failed to transcribe audio");
+  const data = await response.json();
+  return data.text ?? "";
+}
+
+export async function synthesizeVoiceSpeech(text: string, voice?: string): Promise<Blob> {
+  const response = await fetch(`${API_BASE_URL}/voice/speak`, {
+    method: "POST",
+    headers: headers({ "Content-Type": "application/json" }),
+    body: JSON.stringify({ text, voice }),
+  });
+  if (!response.ok) throw new Error("Failed to synthesize speech");
+  return response.blob();
+}
+
+export async function sendVoiceChatMessage(audioBlob: Blob): Promise<{
+  transcript: string;
+  message: ChatMessage;
+  audioBase64?: string;
+}> {
+  const sessionId = await getSessionId();
+  const formData = new FormData();
+  formData.append("session_id", sessionId);
+  formData.append("file", audioBlob, "voice_input.webm");
+
+  const response = await fetch(`${API_BASE_URL}/voice/chat`, {
+    method: "POST",
+    headers: headers(),
+    body: formData,
+  });
+
+  if (!response.ok) throw new Error("Voice chat request failed");
+  const payload = await response.json();
+
+  const chatMsg: ChatMessage = {
+    id: crypto.randomUUID(),
+    role: "assistant",
+    content: payload.message ?? "",
+    timestamp: "now",
+    cards: cardsFromChatResponse(payload.message ?? "", payload.data),
+  };
+
+  return {
+    transcript: payload.transcript ?? "",
+    message: chatMsg,
+    audioBase64: payload.audio_base64 ?? undefined,
+  };
+}

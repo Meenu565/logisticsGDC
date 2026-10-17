@@ -1,25 +1,56 @@
 import { motion } from "framer-motion";
+import { Volume2 } from "lucide-react";
 import { Avatar } from "../ui/avatar";
 import { ChatCard } from "./ChatCard";
 import type { ChatMessage, DashboardState } from "../../types/dispatch";
 
-export function MessageBubble({ message, dashboard }: { message: ChatMessage; dashboard: DashboardState }) {
+export function MessageBubble({
+  message,
+  dashboard,
+  onReplayVoice,
+}: {
+  message: ChatMessage;
+  dashboard: DashboardState;
+  onReplayVoice?: (text: string) => void;
+}) {
   const isAssistant = message.role === "assistant";
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.15 }}
       className={`flex gap-3 ${isAssistant ? "" : "flex-row-reverse"}`}
     >
-      {isAssistant ? <Avatar initials="AI" className="mt-1" /> : <Avatar initials="ME" className="mt-1 bg-white/10" />}
-      <div className={`max-w-[86%] ${isAssistant ? "" : "items-end"}`}>
+      {isAssistant ? (
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-stone-800 text-purple-300 border border-stone-700/60 text-[10px] font-semibold mt-1 shadow-sm">
+          AI
+        </div>
+      ) : (
+        <Avatar initials="ME" className="h-7 w-7 mt-1 bg-stone-800 text-stone-300 border border-stone-700/60 text-[10px]" />
+      )}
+      <div className={`max-w-[88%] ${isAssistant ? "" : "items-end"}`}>
         <div
-          className={`rounded-3xl px-5 py-4 text-[15px] leading-7 shadow-soft ${
-            isAssistant ? "bg-[#111827] text-slate-100" : "bg-blue-500 text-white"
+          className={`group relative rounded-2xl px-4 py-3 text-[14px] leading-6 shadow-sm transition-all ${
+            isAssistant
+              ? "bg-[#181615] text-stone-200 border border-stone-800/80"
+              : "bg-[#292524] text-stone-100 border border-stone-700/70"
           }`}
         >
           {message.content}
+
+          {isAssistant && onReplayVoice && message.content && (
+            <button
+              type="button"
+              onClick={() => onReplayVoice(message.content)}
+              className="absolute bottom-2 right-2 rounded-full bg-stone-800/80 border border-stone-700/60 p-1 text-stone-400 opacity-0 transition-opacity hover:text-purple-300 hover:border-purple-400/40 group-hover:opacity-100"
+              title="Speak this response (Aura)"
+              aria-label="Replay audio"
+            >
+              <Volume2 className="h-3.5 w-3.5" />
+            </button>
+          )}
         </div>
+
         {message.cards?.map((card, index) => (
           <ChatCard card={card} dashboard={dashboard} key={`${card.title}-${index}`} />
         ))}

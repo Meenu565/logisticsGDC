@@ -69,3 +69,12 @@ class OrderRepository(Repository[Order]):
     def get_delivery_type_by_code(self, code: str) -> DeliveryType | None:
         statement = select(DeliveryType).where(DeliveryType.code == code)
         return self.db.scalars(statement).one_or_none()
+
+    def get_by_external_id(self, external_order_id: str) -> Order | None:
+        statement = select(Order).where(Order.external_order_id == external_order_id)
+        return self.db.scalars(statement).first()
+
+    def clear_stops(self, order_id: UUID) -> None:
+        from sqlalchemy import delete
+        self.db.execute(delete(Stop).where(Stop.order_id == order_id))
+        self.db.flush()

@@ -1,0 +1,7 @@
+external_order_id,customer_name,delivery_type,priority,required_weight_kg,required_volume_m3,notes,pickup_address_line1,pickup_city,pickup_region,pickup_postal_code,pickup_country,pickup_latitude,pickup_longitude,dropoff_address_line1,dropoff_city,dropoff_region,dropoff_postal_code,dropoff_country,dropoff_latitude,dropoff_longitude
+ORD-2001,Toronto General Hospital,white_glove,10,120.00,1.50,Medical equipment fragile,585 University Ave,Toronto,ON,M5G 2N2,Canada,43.6585,-79.3900,200 Elizabeth St,Toronto,ON,M5G 2C4,Canada,43.6577,-79.3888
+ORD-2002,Metro Supermarket,curbside,5,450.00,3.20,Dry grocery pallets,100 Queens Quay E,Toronto,ON,M5A 1B6,Canada,43.6465,-79.3705,444 Yonge St,Toronto,ON,M4Y 1W9,Canada,43.6612,-79.3832
+ORD-2003,Yorkville Boutique,threshold,7,65.00,0.80,Luxury clothing racks,55 Bloor St W,Toronto,ON,M4W 1A5,Canada,43.6698,-79.3892,130 Bloor St W,Toronto,ON,M5S 1N5,Canada,43.6685,-79.3920
+ORD-2004,Scarborough Tech Hub,curbside,3,280.00,2.10,Server rack components,100 Consilium Pl,Scarborough,ON,M1H 3E3,Canada,43.7770,-79.2530,300 Borough Dr,Scarborough,ON,M1P 4P5,Canada,43.7735,-79.2575
+ORD-2005,Lakeshore Condos,white_glove,8,180.00,2.40,Furniture assembly required,2150 Lake Shore Blvd W,Etobicoke,ON,M8V 1A3,Canada,43.6231,-79.4795,15 Legion Rd,Etobicoke,ON,M8V 1R7,Canada,43.6268,-79.4880
+ORD-2006,Downtown Law Chambers,curbside,2,35.00,0.30,Legal document archives,333 Bay St,Toronto,ON,M5H 2R2,Canada,43.6501,-79.3812,100 King St W,Toronto,ON,M5X 1A9,Canada,43.6486,-79.3817

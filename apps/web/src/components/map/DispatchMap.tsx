@@ -106,9 +106,9 @@ export function DispatchMap({ dashboard }: DispatchMapProps) {
           source: ROUTES_SOURCE,
           layout: { "line-cap": "round", "line-join": "round" },
           paint: {
-            "line-color": ["coalesce", ["get", "color"], "#3b82f6"],
-            "line-width": 4,
-            "line-opacity": 0.42,
+            "line-color": ["coalesce", ["get", "color"], "#a7e5d3"],
+            "line-width": 3.5,
+            "line-opacity": 0.5,
             "line-blur": 0.4,
           },
         });
@@ -124,9 +124,9 @@ export function DispatchMap({ dashboard }: DispatchMapProps) {
           source: SELECTED_ROUTE_SOURCE,
           layout: { "line-cap": "round", "line-join": "round" },
           paint: {
-            "line-color": ["coalesce", ["get", "color"], "#3b82f6"],
-            "line-width": 6,
-            "line-opacity": 0.92,
+            "line-color": ["coalesce", ["get", "color"], "#c8b8e0"],
+            "line-width": 5.5,
+            "line-opacity": 0.95,
             "line-blur": 0.2,
           },
         });
@@ -221,28 +221,31 @@ export function DispatchMap({ dashboard }: DispatchMapProps) {
   }, [selectedRoute, selectedDriver, selectedOrder, selectedRecommendation]);
 
   return (
-    <section className="relative h-full overflow-hidden rounded-[24px] border border-white/10 bg-[#050913] shadow-soft">
+    <section className="relative h-full overflow-hidden rounded-3xl border border-stone-800/80 bg-[#141211] shadow-card">
       <div ref={containerRef} className="absolute inset-0" />
       {!token && <MapTokenState />}
       {token && !hasMapContent(dashboard) && <EmptyMapState />}
-      <div className="pointer-events-none absolute left-4 top-4 rounded-full border border-white/10 bg-slate-950/82 px-3 py-1.5 text-xs text-slate-200 shadow-soft">
-        Live route workspace
+      <div className="pointer-events-none absolute left-4 top-4 rounded-full border border-stone-800 bg-[#161413]/90 backdrop-blur-md px-3 py-1 text-xs text-stone-300 shadow-sm flex items-center gap-1.5">
+        <span className="h-1.5 w-1.5 rounded-full bg-purple-400" />
+        <span>Live Route Canvas</span>
       </div>
       {selectedRoute && (
         <button
           type="button"
           onClick={() => selectRoute(selectedRoute)}
-          className="absolute bottom-4 left-4 right-4 rounded-2xl border border-white/10 bg-slate-950/90 p-4 text-left shadow-soft transition hover:border-blue-300/35"
+          className="absolute bottom-4 left-4 right-4 rounded-2xl border border-stone-800 bg-[#161413]/90 backdrop-blur-md p-3.5 text-left shadow-card transition-all hover:border-stone-700"
         >
           <div className="flex items-center justify-between gap-3">
             <div>
-              <div className="text-sm font-semibold text-white">
-                {dashboard.drivers.find((driver) => driver.id === selectedRoute.driverId)?.name ?? "Selected route"}
+              <div className="text-xs font-medium text-stone-100">
+                {dashboard.drivers.find((driver) => driver.id === selectedRoute.driverId)?.name ?? "Selected Route"}
               </div>
-              <div className="mt-1 text-xs text-slate-400">{selectedRoute.stopLabels.join(" -> ")}</div>
+              <div className="mt-0.5 text-[11px] text-stone-400 truncate max-w-[200px]">
+                {selectedRoute.stopLabels.join(" → ")}
+              </div>
             </div>
-            <div className="shrink-0 text-right text-xs text-slate-300">
-              <div>{formatMinutes(selectedRoute.travelSeconds)}</div>
+            <div className="shrink-0 text-right text-[11px] text-stone-400">
+              <div className="text-stone-200 font-medium">{formatMinutes(selectedRoute.travelSeconds)}</div>
               <div>{formatDistance(selectedRoute.distanceMeters)}</div>
             </div>
           </div>
